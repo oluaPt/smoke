@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixi Emitter - Smoke</title>
+    <style type="text/css">
+        body {
+          	margin: 0;
+          	padding: 0;
+          	background-color: #020202;
+        }
+
+        canvas {
+            padding: 0;
+            margin: 10px auto 0;
+            display: block;
+        }
+    </style>
+    <link rel="icon" href="https://pixijs.com/images/favicon.png" type="image/x-icon">
+    <script src="https://pixijs.download/release/pixi.js"></script>
+	<script src="https://pixijs.io/particle-emitter/dist/particle-emitter.js"></script>    
+</head>
+<body>
+    <script type="module">
+        // create Pixi app
+        const app = new PIXI.Application();
+        await app.init({ backgroundColor: 0x000000, width: 1024, height: 768 });
+        document.body.appendChild(app.canvas);
+        
+        // starting emitter
+        await PIXI.Assets.load('./particle.png');
+        const emitter = new PIXI.particles.Emitter(app.stage, createEmitterConfig());
+        (function play() { emitter.playOnce(play); })();
+
+        // emmiter configuration
+        function createEmitterConfig() {
+            const pos = { x: 487, y: 479 };
+            const colour = '0x0F22D4';
+            const duration = 5; //seconds
+
+            return {
+                // Particle properties
+                lifetime: { min: 0.5, max: 1.5 }, // Lifetime range
+                frequency: 0.001, // Emission frequency
+                maxParticles: 200, // Maximum particles
+                emitterLifetime: duration, // Emitter lifetime
+                addAtBack: false, // Add particles at back
+                autoUpdate: true, // Auto-update
+                emit: false, // Start emitting
+                pos, // Position
+                behaviors: [
+                    // Particle behaviors
+                    { type: 'alpha', config: { alpha: { list: [{ value: 1, time: 0 }, { value: 0.5, time: 0.8 }, { value: 0.1, time: 1 }] } } }, // Alpha
+                    { type: 'scale', config: { scale: { list: [{ value: 0.1, time: 0 }, { value: 1, time: 1 }] } } }, // Scale
+                    { type: 'color', config: { color: { list: [{ value: '#ffffff', time: 0.3 }, { value: colour, time: 1 }] } } }, // Color
+                    { type: 'moveSpeed', config: { speed: { list: [{ value: 20, time: 0 }, { value: 300, time: 1 }], isStepped: false }, minMult: 0.2 } }, // Movement speed
+                    { type: 'rotationStatic', config: { min: -110, max: -70 } }, // Rotation
+                    { type: 'textureSingle', config: { texture: PIXI.Texture.from('./particle.png') } }, // Texture
+                ],
+            };
+        }
+    </script>
+</body>
+</html>
