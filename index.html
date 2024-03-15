@@ -32,6 +32,7 @@
             // starting emitter
             await PIXI.Assets.load('./particle.png');
             const emitter = new PIXI.particles.Emitter(app.stage, createEmitterConfig());
+            PIXI.Ticker.shared.maxFPS = 60;
             (function play() { emitter.playOnce(play); })();
 
             // emmiter configuration
